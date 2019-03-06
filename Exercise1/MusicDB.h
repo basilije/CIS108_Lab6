@@ -6,8 +6,7 @@ namespace MusicDB
 	void loadTheMusicDatabaseFromFile();
 	void saveTheMusicDatabaseToFile();
 	int returnTheTotalNumberOfSongs();
-	void printAllSongsInformations(int);
-	void getTheSongInformationBySongNumber(int);
+	void printAllSongsInformations();
 	void addANewSongToTheDatabase();
 	bool isThereANewSong();
 

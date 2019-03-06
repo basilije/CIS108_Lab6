@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-
+#include <vector>
 using namespace std;
 
 
@@ -12,14 +12,15 @@ namespace MusicDB
 	const int MAX_SONG_RECORDS = 8;  // define a max number of song records in database
 	string binary_database_file_name = "MyFavoriteSongs.db";  // define the database file name
 	int total_number_of_songs;  // integer to keep total number of songs in any time
-	Song all_songs [MAX_SONG_RECORDS];  // make an empty array for storing all songs
+	vector<Song> all_songs; // make an vector for storing all songs
 	Song song_to_add;  // make a one-element structure for adding a new song
 	bool there_is_a_new_song;  // define the bool that will know if there is a new song entered
 
 	// a function for loading the song database into the array and counting a number of songs
 	void loadTheMusicDatabaseFromFile()
 	{
-		Song song;  // make a one-element structure for reading song-by-song from a database
+		all_songs.clear();  // clear the vector
+		Song the_song;  // make a one-element structure for reading song-by-song from a database
 		ifstream file;  // construct a ifstream object
 		total_number_of_songs = 0;  // set number of songs to 0
 
@@ -33,9 +34,9 @@ namespace MusicDB
 				file.exceptions(ifstream::badbit | ifstream::eofbit);  // set the possible exceptions when reading the file
 				try
 				{
-					file.read((char*)& song, sizeof(song));  // read the one song from the file
+					file.read((char*)& the_song, sizeof(the_song));  // read the one song from the file
 					if (total_number_of_songs <= MAX_SONG_RECORDS - 1)  // if there is a space in an array
-						all_songs[total_number_of_songs] = song;  // add that song to the array
+						all_songs.push_back(the_song);  // add that song to the end ov vector
 					total_number_of_songs++;  // increase the number of total songs
 				}
 				catch (const exception & exc)
@@ -60,60 +61,66 @@ namespace MusicDB
 		return total_number_of_songs;  // return a number of songs
 	}
 
-	// a function that print info of one song by order number in array
-	void getTheSongInformationBySongNumber(int song_number)
-	{
-		string genre_string;  // define the string for genre output
-		cout << "Song #" << song_number + 1 << ":" << endl;  // print a song order number (+1 cause the array index starts from 0)
-		cout << "  Title:   " << all_songs[song_number].song_title << endl; // print a song title from an array
-		cout << "  Artist:  " << all_songs[song_number].artist_name << endl; // print a artist name from an array
-		cout << "  Album:   " << all_songs[song_number].album_name << endl; // print a album name from an array
-		cout << "  Track #: " << all_songs[song_number].track_number << endl; // print a track number from an array
-		cout << "  Year:    " << all_songs[song_number].year_released << endl; // print a year released from an array
-
-		switch (all_songs[song_number].song_genre)  // decide which string to print as genre based on genre recorded in an array
-		{
-		case Blues:						 // cases are obvious
-			genre_string = "Blues";
-			break;
-		case Country:                   
-			genre_string = "Country";
-			break;
-		case Electronic:
-			genre_string = "Electronic";
-			break;
-		case Folk:
-			genre_string = "Folk";
-			break;
-		case HipHop:
-			genre_string = "HipHop";
-			break;
-		case Jazz:
-			genre_string = "Jazz";
-			break;
-		case Latin:
-			genre_string = "Latin";
-			break;
-		case Pop:
-			genre_string = "Pop";
-			break;
-		case Rock:
-			genre_string = "Rock";
-			break;
-		default: // to avoid an error, Unknown (0) is default
-			genre_string = "Unknown";
-			break;
-		}                               // end of switch
-
-		cout << "  Genre:   " << genre_string << endl;  // print the genre selected
-	}
 
 	// function that prints info of all songs in the database until the defined numer
-	void printAllSongsInformations(int song_number)
+	void printAllSongsInformations()
 	{
-		for (int song_number_counter = 0; song_number_counter < song_number; song_number_counter++)  // through the loop
-			getTheSongInformationBySongNumber(song_number_counter);  // print the song information
+		int song_number = 0;  // define the integer for storing the song's order number
+		string genre_string;  // define the string for genre output
+		vector<Song>::iterator all_songs_itr;  // Initializing an iterator
+		Song the_song;  // Initializing a variable for picking up the current iterator *value
+
+		for (all_songs_itr = all_songs.begin(); all_songs_itr<all_songs.end(); all_songs_itr++) // through the loop
+		//for (int song_number_counter = 0; song_number_counter < song_number; song_number_counter++) 
+		{
+			the_song = *all_songs_itr;  //picking up the current iterator value
+			cout << "Song #" << song_number + 1 << ":" << endl;  // print a song order number (+1 cause the array index starts from 0)
+			cout << "  Title:   " << the_song.song_title << endl; // print a song title from an array
+			cout << "  Artist:  " << the_song.artist_name << endl; // print a artist name from an array
+			cout << "  Album:   " << the_song.album_name << endl; // print a album name from an array
+			cout << "  Track #: " << the_song.track_number << endl; // print a track number from an array
+			cout << "  Year:    " << the_song.year_released << endl; // print a year released from an array
+
+			switch (the_song.song_genre)  // decide which string to print as genre based on genre recorded in an array
+			{
+			case Blues:						 // cases are obvious
+				genre_string = "Blues";
+				break;
+			case Country:
+				genre_string = "Country";
+				break;
+			case Electronic:
+				genre_string = "Electronic";
+				break;
+			case Folk:
+				genre_string = "Folk";
+				break;
+			case HipHop:
+				genre_string = "HipHop";
+				break;
+			case Jazz:
+				genre_string = "Jazz";
+				break;
+			case Latin:
+				genre_string = "Latin";
+				break;
+			case Pop:
+				genre_string = "Pop";
+				break;
+			case Rock:
+				genre_string = "Rock";
+				break;
+			default: // to avoid an error, Unknown (0) is default
+				genre_string = "Unknown";
+				break;
+			}                               // end of switch
+
+			cout << "  Genre:   " << genre_string << endl;  // print the genre selected
+			song_number++;
+
+		}  // end of for loop
 	}
+
 
 	// function that add a new song to the database
 	void addANewSongToTheDatabase()
@@ -121,7 +128,7 @@ namespace MusicDB
 		string input_str;  // define the strign for taking the input
 		there_is_a_new_song = false;  // set that there is currently not a new song
 
-		if (total_number_of_songs < MAX_SONG_RECORDS - 1)  // just if there is a space in the array (number of songs is lower than max - 1)
+		if (total_number_of_songs < MAX_SONG_RECORDS - 1)  // just if there is a pre-defined space (number of songs is lower than max - 1)
 		{ 
 			try
 			{
@@ -194,8 +201,7 @@ namespace MusicDB
 				else if (input_str == "Pop")
 					song_to_add.song_genre = Pop;
 				else if (input_str == "Rock")
-					song_to_add.song_genre = Rock;
-                                                             // end of if
+					song_to_add.song_genre = Rock;         // end of if
 
 				there_is_a_new_song = true;  // set to there is a new song entered
 			}
@@ -204,7 +210,7 @@ namespace MusicDB
 				cout << exc.what() << endl << " Adding a new song is automatically canceled!" << endl;  // print type of exception and the information that adding is canceled
 			}
 		}
-		else  // if there is no space in the array
+		else  // if the number of songs is larger than a max number of songs defined
 			cout << "Could not add a new song, there are too many songs in the database." << endl;  // print that info to the user
 	}
 

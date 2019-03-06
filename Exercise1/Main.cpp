@@ -36,7 +36,7 @@ int main()
 		if (command_entered == "list")  // if the commands is to list the database
 		{
 			cout << "There are " << number_of_songs_in_db << " songs in the database." << endl;   // print the number of the songs in the database
-			MusicDB::printAllSongsInformations(number_of_songs_in_db);  // use the function to print all songs in the database
+			MusicDB::printAllSongsInformations();  // use the function to print all songs in the database
 		}
 
 		if (command_entered == "save")  // if the command is to save the database
